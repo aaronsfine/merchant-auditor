@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+
+# Load local environment variables early (before importing modules that read os.environ)
+load_dotenv()
+
 from fastapi import FastAPI, UploadFile, File, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
@@ -190,43 +195,48 @@ async def upload_csv(file: UploadFile = File(...)):
         raise
     except SanitizedProcessingError as e:
         error_message = f"Row {e.row_number}: {e.error_type}"
-        stack_trace = traceback.format_exc()
-        log_processing_error(session_id, error_message, stack_trace)
-        send_processing_error_alert(
-            session_id,
-            error_message,
-            __timestamp_for_logs(),
-        )
-        return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={
-                "detail": "Processing failed. Please try again or contact support with your Session ID.",
-                "session_id": session_id,
-            },
-            headers={"X-Session-Id": session_id},
-        )
+        return _respond_processing_error(session_id, error_message, traceback.format_exc())
     except Exception as e:
         error_message = f"{type(e).__name__}: processing error"
-        stack_trace = traceback.format_exc()
-        log_processing_error(session_id, error_message, stack_trace)
-        send_processing_error_alert(
-            session_id,
-            error_message,
-            __timestamp_for_logs(),
-        )
-        return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={
-                "detail": "Processing failed. Please try again or contact support with your Session ID.",
-                "session_id": session_id,
-            },
-            headers={"X-Session-Id": session_id},
-        )
+        return _respond_processing_error(session_id, error_message, traceback.format_exc())
 
 
 def __timestamp_for_logs() -> str:
     from datetime import datetime, timezone
     return datetime.now(timezone.utc).isoformat()
+
+
+def _respond_processing_error(
+    session_id: str,
+    error_message: str,
+    stack_trace: str,
+) -> JSONResponse:
+    """Log to DB, send Resend alert, and return 500 with session_id. Shared by upload and test-bug-report."""
+    log_processing_error(session_id, error_message, stack_trace)
+    send_processing_error_alert(session_id, error_message, __timestamp_for_logs())
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "detail": "Processing failed. Please try again or contact support with your Session ID.",
+            "session_id": session_id,
+        },
+        headers={"X-Session-Id": session_id},
+    )
+
+
+@app.get("/test-bug-report")
+def test_bug_report():
+    """
+    Temporary route to verify error tracking: raises ValueError and runs through
+    the same try/except path as the CSV processor (DB log, Resend email, session_id).
+    """
+    session_id = _generate_session_id()
+    try:
+        raise ValueError("This is a test bug report")
+    except Exception as e:
+        error_message = f"{type(e).__name__}: processing error"
+        stack_trace = traceback.format_exc()
+        return _respond_processing_error(session_id, error_message, stack_trace)
 
 
 @app.get("/health")

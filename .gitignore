@@ -12,6 +12,7 @@ Thumbs.db
 
 *.log
 processing_errors.db
+.env
 
 .mypy_cache/
 .pytest_cache/
