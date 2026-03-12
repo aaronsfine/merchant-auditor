@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Merchant Statement Auditor - Demo</title>
+    <title>Merchant Statement Auditor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
@@ -29,104 +29,92 @@
               </div>
             </div>
           </div>
-          <span
-            class="inline-flex items-center gap-1 rounded-full bg-slate-900 border border-slate-700 px-3 py-1 text-xs text-slate-400"
-          >
-            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-            Demo environment
-          </span>
         </div>
       </header>
 
       <main class="flex-1">
         <div class="mx-auto max-w-6xl px-4 py-6 space-y-6">
-          <section class="flex flex-col md:flex-row md:items-center gap-4">
-            <div class="flex-1 space-y-2">
-              <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">
-                Savings Opportunity Snapshot
-              </h1>
-              <p class="text-sm text-slate-400 max-w-xl">
-                Run a demo audit against sample transaction data to quantify
-                interchange downgrade leakage and highlight where your clients
-                are leaving money on the table.
-              </p>
-            </div>
-            <div class="flex items-center gap-3">
-              <button
-                id="run-demo-btn"
-                class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/30 hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                <span>Run Demo Audit</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="h-4 w-4"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M3.5 10a.75.75 0 0 1 .75-.75h8.69L9.22 5.53a.75.75 0 1 1 1.06-1.06l5.25 5.25a.75.75 0 0 1 0 1.06l-5.25 5.25a.75.75 0 1 1-1.06-1.06l3.72-3.72H4.25A.75.75 0 0 1 3.5 10Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </button>
-              <div
-                id="audit-status"
-                class="text-xs text-slate-400 whitespace-nowrap"
-              >
-                Awaiting input&hellip;
-              </div>
-            </div>
+          <section class="space-y-2">
+            <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">
+              Savings Opportunity Snapshot
+            </h1>
+            <p class="text-sm text-slate-400 max-w-xl">
+              Upload your transaction CSV to quantify interchange downgrade
+              leakage and see where you're leaving money on the table.
+            </p>
           </section>
 
-          <!-- Upload zone -->
-          <section>
-            <div
-              id="upload-zone"
-              class="group relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/60 px-4 py-6 text-center hover:border-emerald-500/60 hover:bg-slate-900/60 transition-colors cursor-pointer"
-            >
+          <!-- Two-column: Upload (primary) + How to get CSV (secondary) -->
+          <section class="grid grid-cols-1 lg:grid-cols-[1fr,minmax(0,340px)] gap-4 lg:gap-6">
+            <!-- Left: Upload zone (primary, above the fold) -->
+            <div class="flex flex-col gap-2 min-h-0">
               <div
-                class="pointer-events-none flex flex-col items-center gap-2"
+                id="upload-zone"
+                class="group relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/60 px-4 py-10 lg:py-12 text-center hover:border-emerald-500/60 hover:bg-slate-900/60 transition-colors cursor-pointer flex-1 min-h-[200px]"
               >
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 border border-slate-700 group-hover:border-emerald-500/60 group-hover:bg-emerald-500/5"
+                  class="pointer-events-none flex flex-col items-center gap-2"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="h-5 w-5 text-slate-300 group-hover:text-emerald-300"
+                  <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-900 border border-slate-700 group-hover:border-emerald-500/60 group-hover:bg-emerald-500/5"
                   >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 2.5a.75.75 0 0 1 .75.75v7.69l2.47-2.47a.75.75 0 1 1 1.06 1.06l-3.75 3.75a.75.75 0 0 1-1.06 0l-3.75-3.75a.75.75 0 0 1 1.06-1.06l2.47 2.47V3.25A.75.75 0 0 1 10 2.5Z"
-                      clip-rule="evenodd"
-                    />
-                    <path
-                      d="M3.5 12.75a.75.75 0 0 1 .75.75v.75A1.75 1.75 0 0 0 6 16h8a1.75 1.75 0 0 0 1.75-1.75v-.75a.75.75 0 0 1 1.5 0v.75A3.25 3.25 0 0 1 14 17.25H6A3.25 3.25 0 0 1 2.75 14v-.75a.75.75 0 0 1 .75-.75Z"
-                    />
-                  </svg>
-                </div>
-                <div class="space-y-1">
-                  <p class="text-sm font-medium text-slate-100">
-                    Drop a CSV to run a real audit
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="h-6 w-6 text-slate-300 group-hover:text-emerald-300"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 2.5a.75.75 0 0 1 .75.75v7.69l2.47-2.47a.75.75 0 1 1 1.06 1.06l-3.75 3.75a.75.75 0 0 1-1.06 0l-3.75-3.75a.75.75 0 0 1 1.06-1.06l2.47 2.47V3.25A.75.75 0 0 1 10 2.5Z"
+                        clip-rule="evenodd"
+                      />
+                      <path
+                        d="M3.5 12.75a.75.75 0 0 1 .75.75v.75A1.75 1.75 0 0 0 6 16h8a1.75 1.75 0 0 0 1.75-1.75v-.75a.75.75 0 0 1 1.5 0v.75A3.25 3.25 0 0 1 14 17.25H6A3.25 3.25 0 0 1 2.75 14v-.75a.75.75 0 0 1 .75-.75Z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-sm font-semibold text-slate-100">
+                      Drop a CSV to run your audit
+                    </p>
+                    <p class="text-xs text-slate-400 max-w-sm">
+                      We map Amount, Interchange, Date &amp; Card Type automatically.
+                    </p>
+                  </div>
+                  <p class="text-[11px] text-slate-500">
+                    Click to browse or drop a file
                   </p>
-                  <p class="text-xs text-slate-400 max-w-md">
-                    We’ll automatically map your columns (Amount, Interchange,
-                    Date, etc.) and recalculate the leakage metrics on your live
-                    data.
-                  </p>
                 </div>
-                <p class="text-[11px] text-slate-500">
-                  Click to browse or drop a file here
-                </p>
+                <input
+                  id="upload-input"
+                  type="file"
+                  accept=".csv,text/csv"
+                  class="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+                />
               </div>
-              <input
-                id="upload-input"
-                type="file"
-                accept=".csv,text/csv"
-                class="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
-              />
+              <p id="audit-status" class="text-xs text-slate-500 text-center">
+                Drop a CSV or click to browse
+              </p>
+            </div>
+
+            <!-- Right: How to get your CSV (compact) -->
+            <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-4 flex flex-col justify-center lg:min-h-[200px]">
+              <div class="flex items-center gap-2 mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-slate-500 shrink-0">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">How to get your CSV</span>
+              </div>
+              <p class="text-[11px] font-medium text-slate-400 mb-1.5">How to test your data:</p>
+              <ol class="list-decimal list-inside text-[11px] text-slate-500 space-y-1 mb-3">
+                <li>Log into your payment gateway (Authorize.net, Stripe, Stax, Payarc, etc.).</li>
+                <li>Go to <strong class="text-slate-400">Transactions</strong> or <strong class="text-slate-400">Reports</strong>.</li>
+                <li>Export the last 30 days as CSV.</li>
+              </ol>
+              <p class="text-[11px] text-slate-500 rounded-lg bg-slate-950/80 border border-slate-800 px-2.5 py-2">
+                <span class="font-semibold text-emerald-400/90">Privacy First:</span> Remove Customer Name/Email columns before uploading. We only need Date, Amount, Card Type, and Interchange/Fee Code.
+              </p>
             </div>
           </section>
 
@@ -305,7 +293,6 @@
     </div>
 
     <script>
-      const runBtn = document.getElementById("run-demo-btn");
       const statusEl = document.getElementById("audit-status");
       const uploadZone = document.getElementById("upload-zone");
       const uploadInput = document.getElementById("upload-input");
@@ -470,35 +457,11 @@
         URL.revokeObjectURL(url);
       }
 
-      async function runAudit() {
-        runBtn.disabled = true;
-        statusEl.textContent = "Running demo audit…";
-
-        try {
-          const resp = await fetch("/api/audit");
-          if (!resp.ok) {
-            throw new Error(`HTTP ${resp.status}`);
-          }
-          const data = await resp.json();
-
-          applyAuditResult(data);
-
-          statusEl.textContent = "Audit complete.";
-        } catch (err) {
-          console.error(err);
-          statusEl.textContent =
-            "Unable to run audit. Please confirm the API is running.";
-        } finally {
-          runBtn.disabled = false;
-        }
-      }
-
       async function uploadAndAudit(file) {
         const formData = new FormData();
         formData.append("file", file);
 
         statusEl.textContent = `Uploading "${file.name}" and running audit…`;
-        runBtn.classList.add("hidden");
 
         try {
           const resp = await fetch("/api/upload", {
@@ -519,11 +482,8 @@
           console.error(err);
           statusEl.textContent =
             "Unable to process CSV. Please check the file format and try again.";
-          runBtn.classList.remove("hidden");
         }
       }
-
-      runBtn.addEventListener("click", runAudit);
 
       exportBtn.addEventListener("click", () => {
         if (!lastAuditResult) {
