@@ -11,6 +11,7 @@ venv/
 Thumbs.db
 
 *.log
+processing_errors.db
 
 .mypy_cache/
 .pytest_cache/

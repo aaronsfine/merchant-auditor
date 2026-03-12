@@ -206,6 +206,9 @@
                 <span>Export Downgrade Report</span>
               </button>
             </div>
+            <p id="session-id-display" class="text-[11px] text-slate-500 text-right mt-1 hidden">
+              Session ID: <span id="session-id-value" class="font-mono font-medium text-slate-400"></span>
+            </p>
           </section>
 
           <!-- Recommendations -->
@@ -308,6 +311,8 @@
 
       const recSection = document.getElementById("recommendations-section");
       const recList = document.getElementById("recommendations-list");
+      const sessionIdDisplay = document.getElementById("session-id-display");
+      const sessionIdValue = document.getElementById("session-id-value");
 
       let lastAuditResult = null;
 
@@ -432,6 +437,13 @@
         }
 
         exportBtn.disabled = failed.length === 0;
+
+        if (data.session_id) {
+          sessionIdValue.textContent = data.session_id;
+          sessionIdDisplay.classList.remove("hidden");
+        } else {
+          sessionIdDisplay.classList.add("hidden");
+        }
       }
 
       function downloadCsv(filename, rows) {
@@ -470,8 +482,22 @@
           });
 
           if (!resp.ok) {
-            const message = await resp.text();
-            throw new Error(message || `HTTP ${resp.status}`);
+            const text = await resp.text();
+            let detail = text;
+            let sessionId = null;
+            try {
+              const body = JSON.parse(text);
+              detail = body.detail || text;
+              sessionId = body.session_id || null;
+            } catch (_) {}
+            if (sessionId) {
+              sessionIdValue.textContent = sessionId;
+              sessionIdDisplay.classList.remove("hidden");
+              statusEl.textContent = `Processing failed. Session ID: ${sessionId} — save this when contacting support.`;
+            } else {
+              statusEl.textContent = detail || "Unable to process CSV. Please check the file format and try again.";
+            }
+            return;
           }
 
           const data = await resp.json();
