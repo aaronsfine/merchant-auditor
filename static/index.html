@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Merchant Statement Auditor - Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="min-h-screen flex flex-col">
+      <header
+        class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-10"
+      >
+        <div
+          class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-2">
+            <div
+              class="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center"
+            >
+              <div class="h-4 w-4 rounded-md bg-emerald-400"></div>
+            </div>
+            <div>
+              <div class="text-sm font-semibold tracking-wide text-emerald-400">
+                Merchant Statement Auditor
+              </div>
+              <div class="text-xs text-slate-400">
+                Interchange Downgrade Leak Analyzer
+              </div>
+            </div>
+          </div>
+          <span
+            class="inline-flex items-center gap-1 rounded-full bg-slate-900 border border-slate-700 px-3 py-1 text-xs text-slate-400"
+          >
+            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+            Demo environment
+          </span>
+        </div>
+      </header>
+
+      <main class="flex-1">
+        <div class="mx-auto max-w-6xl px-4 py-6 space-y-6">
+          <section class="flex flex-col md:flex-row md:items-center gap-4">
+            <div class="flex-1 space-y-2">
+              <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">
+                Savings Opportunity Snapshot
+              </h1>
+              <p class="text-sm text-slate-400 max-w-xl">
+                Run a demo audit against sample transaction data to quantify
+                interchange downgrade leakage and highlight where your clients
+                are leaving money on the table.
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button
+                id="run-demo-btn"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/30 hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <span>Run Demo Audit</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-4 w-4"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M3.5 10a.75.75 0 0 1 .75-.75h8.69L9.22 5.53a.75.75 0 1 1 1.06-1.06l5.25 5.25a.75.75 0 0 1 0 1.06l-5.25 5.25a.75.75 0 1 1-1.06-1.06l3.72-3.72H4.25A.75.75 0 0 1 3.5 10Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+              <div
+                id="audit-status"
+                class="text-xs text-slate-400 whitespace-nowrap"
+              >
+                Awaiting input&hellip;
+              </div>
+            </div>
+          </section>
+
+          <!-- Upload zone -->
+          <section>
+            <div
+              id="upload-zone"
+              class="group relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/60 px-4 py-6 text-center hover:border-emerald-500/60 hover:bg-slate-900/60 transition-colors cursor-pointer"
+            >
+              <div
+                class="pointer-events-none flex flex-col items-center gap-2"
+              >
+                <div
+                  class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 border border-slate-700 group-hover:border-emerald-500/60 group-hover:bg-emerald-500/5"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="h-5 w-5 text-slate-300 group-hover:text-emerald-300"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 2.5a.75.75 0 0 1 .75.75v7.69l2.47-2.47a.75.75 0 1 1 1.06 1.06l-3.75 3.75a.75.75 0 0 1-1.06 0l-3.75-3.75a.75.75 0 0 1 1.06-1.06l2.47 2.47V3.25A.75.75 0 0 1 10 2.5Z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      d="M3.5 12.75a.75.75 0 0 1 .75.75v.75A1.75 1.75 0 0 0 6 16h8a1.75 1.75 0 0 0 1.75-1.75v-.75a.75.75 0 0 1 1.5 0v.75A3.25 3.25 0 0 1 14 17.25H6A3.25 3.25 0 0 1 2.75 14v-.75a.75.75 0 0 1 .75-.75Z"
+                    />
+                  </svg>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-sm font-medium text-slate-100">
+                    Drop a CSV to run a real audit
+                  </p>
+                  <p class="text-xs text-slate-400 max-w-md">
+                    We’ll automatically map your columns (Amount, Interchange,
+                    Date, etc.) and recalculate the leakage metrics on your live
+                    data.
+                  </p>
+                </div>
+                <p class="text-[11px] text-slate-500">
+                  Click to browse or drop a file here
+                </p>
+              </div>
+              <input
+                id="upload-input"
+                type="file"
+                accept=".csv,text/csv"
+                class="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+              />
+            </div>
+          </section>
+
+          <!-- Metric cards + export -->
+          <section class="space-y-3" id="metrics-section">
+            <div class="grid gap-4 md:grid-cols-3">
+              <div
+                class="rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950/60 p-4"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-medium text-slate-400"
+                    >Total Volume</span
+                  >
+                  <span
+                    class="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400"
+                    >Processed</span
+                  >
+                </div>
+                <div
+                  id="metric-volume"
+                  class="text-2xl font-semibold tracking-tight"
+                >
+                  &mdash;
+                </div>
+              </div>
+
+              <div
+                class="rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950/60 p-4"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-medium text-slate-400"
+                    >Money Lost to Downgrades</span
+                  >
+                  <span
+                    class="inline-flex items-center rounded-full bg-rose-500/10 px-2 py-0.5 text-[10px] font-medium text-rose-400"
+                    >Leakage</span
+                  >
+                </div>
+                <div
+                  id="metric-lost"
+                  class="text-2xl font-semibold tracking-tight text-rose-300"
+                >
+                  &mdash;
+                </div>
+              </div>
+
+              <div
+                class="rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950/60 p-4"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-medium text-slate-400"
+                    >Errors Found</span
+                  >
+                  <span
+                    class="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300"
+                    >Downgraded Txns</span
+                  >
+                </div>
+                <div
+                  id="metric-errors"
+                  class="text-2xl font-semibold tracking-tight"
+                >
+                  &mdash;
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button
+                id="export-report-btn"
+                class="inline-flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-xs font-semibold text-slate-950 shadow-md shadow-sky-500/30 hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-4 w-4"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 2.5a.75.75 0 0 1 .75.75v7.69l2.47-2.47a.75.75 0 1 1 1.06 1.06l-3.75 3.75a.75.75 0 0 1-1.06 0l-3.75-3.75a.75.75 0 0 1 1.06-1.06l2.47 2.47V3.25A.75.75 0 0 1 10 2.5Z"
+                    clip-rule="evenodd"
+                  />
+                  <path
+                    d="M3.5 12.75a.75.75 0 0 1 .75.75v.75A1.75 1.75 0 0 0 6 16h8a1.75 1.75 0 0 0 1.75-1.75v-.75a.75.75 0 0 1 1.5 0v.75A3.25 3.25 0 0 1 14 17.25H6A3.25 3.25 0 0 1 2.75 14v-.75a.75.75 0 0 1 .75-.75Z"
+                  />
+                </svg>
+                <span>Export Downgrade Report</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Recommendations -->
+          <section
+            id="recommendations-section"
+            class="hidden rounded-xl border border-slate-800 bg-slate-950/60 p-4"
+          >
+            <h2 class="text-sm font-medium mb-2">Recommended Fixes</h2>
+            <ul
+              id="recommendations-list"
+              class="list-disc list-inside text-xs text-slate-300 space-y-1"
+            ></ul>
+          </section>
+
+          <!-- Failed transactions table -->
+          <section
+            class="rounded-xl border border-slate-800 bg-slate-950/60 overflow-hidden"
+          >
+            <div
+              class="flex items-center justify-between px-4 py-3 border-b border-slate-800"
+            >
+              <div>
+                <h2 class="text-sm font-medium">
+                  Downgraded Transactions Detail
+                </h2>
+                <p class="text-xs text-slate-400">
+                  Only transactions that failed interchange optimization are
+                  shown here.
+                </p>
+              </div>
+              <span
+                id="failed-count-pill"
+                class="inline-flex items-center rounded-full bg-slate-900 px-3 py-1 text-xs text-slate-400"
+              >
+                0 records
+              </span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-xs">
+                <thead class="bg-slate-900/80 text-slate-400">
+                  <tr>
+                    <th
+                      class="px-4 py-2 text-left font-medium border-b border-slate-800"
+                    >
+                      Date
+                    </th>
+                    <th
+                      class="px-4 py-2 text-left font-medium border-b border-slate-800"
+                    >
+                      Card Type
+                    </th>
+                    <th
+                      class="px-4 py-2 text-right font-medium border-b border-slate-800"
+                    >
+                      Amount
+                    </th>
+                    <th
+                      class="px-4 py-2 text-left font-medium border-b border-slate-800"
+                    >
+                      Interchange Code
+                    </th>
+                    <th
+                      class="px-4 py-2 text-right font-medium border-b border-slate-800"
+                    >
+                      Estimated Loss
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="failed-tbody" class="divide-y divide-slate-900">
+                  <tr id="failed-empty-row">
+                    <td
+                      colspan="5"
+                      class="px-4 py-6 text-center text-slate-500 text-xs"
+                    >
+                      Run the demo audit to view downgraded transactions.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const runBtn = document.getElementById("run-demo-btn");
+      const statusEl = document.getElementById("audit-status");
+      const uploadZone = document.getElementById("upload-zone");
+      const uploadInput = document.getElementById("upload-input");
+      const exportBtn = document.getElementById("export-report-btn");
+
+      const metricVolume = document.getElementById("metric-volume");
+      const metricLost = document.getElementById("metric-lost");
+      const metricErrors = document.getElementById("metric-errors");
+
+      const failedTbody = document.getElementById("failed-tbody");
+      const failedEmptyRow = document.getElementById("failed-empty-row");
+      const failedCountPill = document.getElementById("failed-count-pill");
+
+      const recSection = document.getElementById("recommendations-section");
+      const recList = document.getElementById("recommendations-list");
+
+      let lastAuditResult = null;
+
+      function formatCurrency(value) {
+        if (typeof value !== "number" || Number.isNaN(value)) return "—";
+        return value.toLocaleString(undefined, {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      }
+
+      function formatNumber(value) {
+        if (typeof value !== "number" || Number.isNaN(value)) return "—";
+        return value.toLocaleString();
+      }
+
+      function applyAuditResult(data) {
+        lastAuditResult = data;
+
+        // Update metric cards
+        metricVolume.textContent = formatCurrency(data.total_processed_volume);
+        metricLost.textContent = formatCurrency(data.total_money_lost);
+        metricErrors.textContent = formatNumber(
+          data.count_of_failed_transactions
+        );
+
+        // Update recommendations
+        recList.innerHTML = "";
+        if (Array.isArray(data.recommended_fixes)) {
+          data.recommended_fixes.forEach((item) => {
+            const li = document.createElement("li");
+            li.textContent = item;
+            recList.appendChild(li);
+          });
+        }
+        recSection.classList.remove("hidden");
+
+        // Update failed transactions table
+        const failed = Array.isArray(data.failed_transactions)
+          ? data.failed_transactions
+          : [];
+
+        failedTbody.innerHTML = "";
+        if (failed.length === 0) {
+          failedTbody.appendChild(failedEmptyRow);
+          failedCountPill.textContent = "0 records";
+        } else {
+          failed.forEach((tx) => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-900/70";
+
+            const dateTd = document.createElement("td");
+            dateTd.className = "px-4 py-2 whitespace-nowrap";
+            dateTd.textContent = tx.date ?? "";
+
+            const cardTd = document.createElement("td");
+            cardTd.className =
+              "px-4 py-2 whitespace-nowrap text-slate-200 text-xs";
+            cardTd.textContent = tx.card_type ?? "";
+
+            const amountTd = document.createElement("td");
+            amountTd.className =
+              "px-4 py-2 text-right whitespace-nowrap text-slate-100";
+            amountTd.textContent = formatCurrency(tx.amount ?? 0);
+
+            const codeTd = document.createElement("td");
+            codeTd.className =
+              "px-4 py-2 whitespace-nowrap text-xs font-mono";
+            const code = (tx.interchange_code || "").toString();
+            const upper = code.toUpperCase();
+            const status = (tx.status || "").toString().toUpperCase();
+            const span = document.createElement("span");
+            let baseClass = "inline-flex items-center px-2 py-0.5 rounded ";
+
+            if (status.startsWith("WARNING")) {
+              span.className =
+                baseClass +
+                "bg-amber-500/10 text-amber-300 border border-amber-400/40";
+            } else if (
+              upper.includes("STND") ||
+              upper.includes("STANDARD") ||
+              upper.includes("EIRF")
+            ) {
+              span.className =
+                baseClass +
+                "bg-rose-500/10 text-rose-300 border border-rose-400/40";
+            } else if (
+              upper.includes("L3") ||
+              upper.includes("P3") ||
+              upper.includes("CEDP")
+            ) {
+              span.className =
+                baseClass +
+                "bg-emerald-500/10 text-emerald-300 border border-emerald-400/40";
+            } else {
+              span.className =
+                baseClass +
+                "bg-slate-800 text-slate-200 border border-slate-700";
+            }
+            span.textContent = code;
+            codeTd.appendChild(span);
+
+            const lossTd = document.createElement("td");
+            lossTd.className =
+              "px-4 py-2 text-right whitespace-nowrap text-rose-300";
+            lossTd.textContent = formatCurrency(tx.loss_amount ?? 0);
+
+            tr.appendChild(dateTd);
+            tr.appendChild(cardTd);
+            tr.appendChild(amountTd);
+            tr.appendChild(codeTd);
+            tr.appendChild(lossTd);
+
+            failedTbody.appendChild(tr);
+          });
+
+          failedCountPill.textContent = `${failed.length.toLocaleString()} ${
+            failed.length === 1 ? "record" : "records"
+          }`;
+        }
+
+        exportBtn.disabled = failed.length === 0;
+      }
+
+      function downloadCsv(filename, rows) {
+        const escapeValue = (value) => {
+          const str =
+            value === null || value === undefined ? "" : String(value);
+          if (/[",\n]/.test(str)) {
+            return `"${str.replace(/"/g, '""')}"`;
+          }
+          return str;
+        };
+
+        const csv = rows.map((row) => row.map(escapeValue).join(",")).join("\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      async function runAudit() {
+        runBtn.disabled = true;
+        statusEl.textContent = "Running demo audit…";
+
+        try {
+          const resp = await fetch("/api/audit");
+          if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}`);
+          }
+          const data = await resp.json();
+
+          applyAuditResult(data);
+
+          statusEl.textContent = "Audit complete.";
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent =
+            "Unable to run audit. Please confirm the API is running.";
+        } finally {
+          runBtn.disabled = false;
+        }
+      }
+
+      async function uploadAndAudit(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        statusEl.textContent = `Uploading "${file.name}" and running audit…`;
+        runBtn.classList.add("hidden");
+
+        try {
+          const resp = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!resp.ok) {
+            const message = await resp.text();
+            throw new Error(message || `HTTP ${resp.status}`);
+          }
+
+          const data = await resp.json();
+          applyAuditResult(data);
+
+          statusEl.textContent = `Audit complete for "${file.name}".`;
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent =
+            "Unable to process CSV. Please check the file format and try again.";
+          runBtn.classList.remove("hidden");
+        }
+      }
+
+      runBtn.addEventListener("click", runAudit);
+
+      exportBtn.addEventListener("click", () => {
+        if (!lastAuditResult) {
+          return;
+        }
+        const failed = Array.isArray(lastAuditResult.failed_transactions)
+          ? lastAuditResult.failed_transactions
+          : [];
+        if (failed.length === 0) {
+          return;
+        }
+
+        const header = [
+          "Date",
+          "Amount",
+          "Card Type",
+          "Failed Code",
+          "Action Required",
+        ];
+
+        const rows = [header];
+
+        failed.forEach((tx) => {
+          const date = tx.date ?? "";
+          const amount = tx.amount ?? "";
+          const cardType = tx.card_type ?? "";
+          const code = (tx.interchange_code || "").toString();
+          const upper = code.toUpperCase();
+
+          let failedCode = code;
+          if (upper.includes("STND")) {
+            failedCode = "STND";
+          } else if (upper.includes("EIRF")) {
+            failedCode = "EIRF";
+          }
+
+          let action = "";
+          if (upper.includes("L2") || upper.includes("LEVEL 2")) {
+            action =
+              "URGENT: Level 2 rates sunsetting April 18th. Upgrade gateway to pass Level 3/CEDP data immediately.";
+          } else if (failedCode === "STND" || failedCode === "EIRF") {
+            action =
+              "Review API payload: Missing Level 3/CEDP data or AVS mismatch.";
+          }
+
+          rows.push([date, amount, cardType, failedCode, action]);
+        });
+
+        downloadCsv("Interchange_Leak_Report.csv", rows);
+      });
+
+      uploadInput.addEventListener("change", (event) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          uploadAndAudit(file);
+        }
+      });
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        uploadZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          uploadZone.classList.add("border-emerald-500/70", "bg-slate-900/60");
+        });
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        uploadZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          uploadZone.classList.remove(
+            "border-emerald-500/70",
+            "bg-slate-900/60"
+          );
+        });
+      });
+
+      uploadZone.addEventListener("drop", (event) => {
+        const dt = event.dataTransfer;
+        const file = dt?.files?.[0];
+        if (file && file.type.match(/csv|text\/csv|application\/vnd.ms-excel/)) {
+          uploadAndAudit(file);
+        }
+      });
+    </script>
+  </body>
+</html>
+
